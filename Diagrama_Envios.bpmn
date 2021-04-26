@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_0o87biy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+  <bpmn:process id="Process_Envios_5238485a" name="Envios" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_11o3wuj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_11o3wuj" sourceRef="StartEvent_1" targetRef="Actividad_pedido" />
+    <bpmn:serviceTask id="Actividad_pedido" name="Pedir paquete">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-pedido" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11o3wuj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xo8b3x</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Actividad_enviado" name="Enviar paquete">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-enviado" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09e716q</bpmn:incoming>
+      <bpmn:outgoing>Flow_0aqc9my</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0aqc9my" sourceRef="Actividad_enviado" targetRef="Actividad_en_camino" />
+    <bpmn:serviceTask id="Actividad_en_camino" name="En camino">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-en-camino" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0aqc9my</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jdp5ks</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Actividad_entregando" name="Entregando">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-entregando" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s64d65</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ntttwd</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1c8prw9" default="Sin_stock">
+      <bpmn:incoming>Flow_1xo8b3x</bpmn:incoming>
+      <bpmn:outgoing>Sin_stock</bpmn:outgoing>
+      <bpmn:outgoing>Con_stock</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1xo8b3x" sourceRef="Actividad_pedido" targetRef="Gateway_1c8prw9" />
+    <bpmn:sequenceFlow id="Sin_stock" name="Sin stock" sourceRef="Gateway_1c8prw9" targetRef="Actividad_enviar_alerta_admin" />
+    <bpmn:sequenceFlow id="Con_stock" name="Con stock" sourceRef="Gateway_1c8prw9" targetRef="Actividad_en_almacen">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=stock&gt;0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Actividad_enviar_alerta_admin" name="Enviar alerta administrador">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-enviar-alerta-admin" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Sin_stock</bpmn:incoming>
+      <bpmn:incoming>No_entrega_paquete</bpmn:incoming>
+      <bpmn:incoming>No_recibio_paquete</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w1uqey</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1w1uqey" sourceRef="Actividad_enviar_alerta_admin" targetRef="Actividad_enviar_alerta_cliente" />
+    <bpmn:serviceTask id="Actividad_enviar_alerta_cliente" name="Enviar alerta cliente">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-enviar-alerta-cliente" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1w1uqey</bpmn:incoming>
+      <bpmn:outgoing>Flow_1270tbc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1270tbc" sourceRef="Actividad_enviar_alerta_cliente" targetRef="Actividad_cancelar_pedido" />
+    <bpmn:serviceTask id="Actividad_cancelar_pedido" name="Cancelar pedido">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-cancelar-pedido" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1270tbc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ts2335</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Actividad_en_almacen" name="En almacén">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-en-almacen" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Con_stock</bpmn:incoming>
+      <bpmn:outgoing>Flow_09e716q</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_09e716q" sourceRef="Actividad_en_almacen" targetRef="Actividad_enviado" />
+    <bpmn:serviceTask id="Activity_0k07j85" name="Llegando">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-llegando" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jdp5ks</bpmn:incoming>
+      <bpmn:outgoing>Flow_0s64d65</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0jdp5ks" sourceRef="Actividad_en_camino" targetRef="Activity_0k07j85" />
+    <bpmn:exclusiveGateway id="Gateway_0un7dra" default="No_entrega_paquete">
+      <bpmn:incoming>Flow_0ntttwd</bpmn:incoming>
+      <bpmn:outgoing>No_entrega_paquete</bpmn:outgoing>
+      <bpmn:outgoing>Entrega_paquete</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="No_entrega_paquete" name="No entrega paquete" sourceRef="Gateway_0un7dra" targetRef="Actividad_enviar_alerta_admin" />
+    <bpmn:serviceTask id="Actividad_recibiendo" name="Recibiendo">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="actividad-recibiendo" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Entrega_paquete</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vfd940</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0s64d65" sourceRef="Activity_0k07j85" targetRef="Actividad_entregando" />
+    <bpmn:sequenceFlow id="Flow_0ntttwd" sourceRef="Actividad_entregando" targetRef="Gateway_0un7dra" />
+    <bpmn:sequenceFlow id="Entrega_paquete" name="Entrega paquete" sourceRef="Gateway_0un7dra" targetRef="Actividad_recibiendo">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=entrega=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_0juumh8" default="No_recibio_paquete">
+      <bpmn:incoming>Flow_1vfd940</bpmn:incoming>
+      <bpmn:outgoing>Recibio_paquete</bpmn:outgoing>
+      <bpmn:outgoing>No_recibio_paquete</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1vfd940" sourceRef="Actividad_recibiendo" targetRef="Gateway_0juumh8" />
+    <bpmn:endEvent id="Event_0rg6505">
+      <bpmn:incoming>Recibio_paquete</bpmn:incoming>
+      <bpmn:incoming>Flow_0ts2335</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Recibio_paquete" name="Recibió paquete" sourceRef="Gateway_0juumh8" targetRef="Event_0rg6505">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=recibe=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="No_recibio_paquete" name="No recibió paquete" sourceRef="Gateway_0juumh8" targetRef="Actividad_enviar_alerta_admin" />
+    <bpmn:sequenceFlow id="Flow_0ts2335" sourceRef="Actividad_cancelar_pedido" targetRef="Event_0rg6505" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_Envios_5238485a">
+      <bpmndi:BPMNEdge id="Flow_0ts2335_di" bpmnElement="Flow_0ts2335">
+        <di:waypoint x="1330" y="430" />
+        <di:waypoint x="2220" y="430" />
+        <di:waypoint x="2220" y="138" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pygzcm_di" bpmnElement="No_recibio_paquete">
+        <di:waypoint x="2030" y="145" />
+        <di:waypoint x="2030" y="290" />
+        <di:waypoint x="580" y="290" />
+        <di:waypoint x="580" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1281" y="272" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03vlobz_di" bpmnElement="Recibio_paquete">
+        <di:waypoint x="2055" y="120" />
+        <di:waypoint x="2202" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2089" y="102" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vfd940_di" bpmnElement="Flow_1vfd940">
+        <di:waypoint x="1860" y="120" />
+        <di:waypoint x="2005" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v9ci37_di" bpmnElement="Entrega_paquete">
+        <di:waypoint x="1615" y="120" />
+        <di:waypoint x="1760" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1647" y="102" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ntttwd_di" bpmnElement="Flow_0ntttwd">
+        <di:waypoint x="1460" y="120" />
+        <di:waypoint x="1565" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s64d65_di" bpmnElement="Flow_0s64d65">
+        <di:waypoint x="1250" y="120" />
+        <di:waypoint x="1360" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gphj0a_di" bpmnElement="No_entrega_paquete">
+        <di:waypoint x="1590" y="145" />
+        <di:waypoint x="1590" y="230" />
+        <di:waypoint x="540" y="230" />
+        <di:waypoint x="540" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1039" y="212" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jdp5ks_di" bpmnElement="Flow_0jdp5ks">
+        <di:waypoint x="1050" y="120" />
+        <di:waypoint x="1150" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09e716q_di" bpmnElement="Flow_09e716q">
+        <di:waypoint x="690" y="120" />
+        <di:waypoint x="770" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1270tbc_di" bpmnElement="Flow_1270tbc">
+        <di:waypoint x="790" y="430" />
+        <di:waypoint x="1230" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w1uqey_di" bpmnElement="Flow_1w1uqey">
+        <di:waypoint x="610" y="430" />
+        <di:waypoint x="690" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oliui9_di" bpmnElement="Con_stock">
+        <di:waypoint x="485" y="120" />
+        <di:waypoint x="590" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="513" y="102" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0beyzim_di" bpmnElement="Sin_stock">
+        <di:waypoint x="460" y="145" />
+        <di:waypoint x="460" y="430" />
+        <di:waypoint x="510" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="453" y="288" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xo8b3x_di" bpmnElement="Flow_1xo8b3x">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="435" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0aqc9my_di" bpmnElement="Flow_0aqc9my">
+        <di:waypoint x="870" y="120" />
+        <di:waypoint x="950" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11o3wuj_di" bpmnElement="Flow_11o3wuj">
+        <di:waypoint x="228" y="120" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="192" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0te1xeq_di" bpmnElement="Actividad_pedido">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b3lv3n_di" bpmnElement="Actividad_enviado">
+        <dc:Bounds x="770" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vhgqtj_di" bpmnElement="Actividad_en_camino">
+        <dc:Bounds x="950" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05sh4km_di" bpmnElement="Actividad_entregando">
+        <dc:Bounds x="1360" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1c8prw9_di" bpmnElement="Gateway_1c8prw9" isMarkerVisible="true">
+        <dc:Bounds x="435" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0e67kuh_di" bpmnElement="Actividad_enviar_alerta_admin">
+        <dc:Bounds x="510" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d4xwma_di" bpmnElement="Actividad_enviar_alerta_cliente">
+        <dc:Bounds x="690" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1veztk6_di" bpmnElement="Actividad_cancelar_pedido">
+        <dc:Bounds x="1230" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_135h2op_di" bpmnElement="Actividad_en_almacen">
+        <dc:Bounds x="590" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_194f4ud_di" bpmnElement="Activity_0k07j85">
+        <dc:Bounds x="1150" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0un7dra_di" bpmnElement="Gateway_0un7dra" isMarkerVisible="true">
+        <dc:Bounds x="1565" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dt9dwa_di" bpmnElement="Actividad_recibiendo">
+        <dc:Bounds x="1760" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0juumh8_di" bpmnElement="Gateway_0juumh8" isMarkerVisible="true">
+        <dc:Bounds x="2005" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0rg6505_di" bpmnElement="Event_0rg6505">
+        <dc:Bounds x="2202" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
