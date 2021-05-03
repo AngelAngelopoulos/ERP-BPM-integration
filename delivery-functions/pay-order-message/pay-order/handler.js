@@ -27,15 +27,16 @@ module.exports = async (event, context) => {
       const mess = await zbc.publishMessage({
         correlationKey: workflow_id,
         messageId: uuid.v4(),
-        name: 'Message_CheckStock',
-        variables: { stock: 5 ,valueToAddToWorkflowVariables: 'here', status: 'PROCESSED' },
+        name: 'Message_ProcessPay',
+        variables: { valueToAddToWorkflowVariables: 'here', status: 'PROCESSED' },
         timeToLive: zb.Duration.seconds.of(1), // seconds
       });
 
       return context.succeed({ res: data, mess });
+
     default:
       return context.status(405).succeed({ res: false });
-  }
 
+  }
 
 }
