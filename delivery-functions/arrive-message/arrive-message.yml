@@ -1,0 +1,10 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://212.2.243.202:31112
+functions:
+  arrive-message:
+    lang: node12
+    handler: ./arrive-message
+    image: valerova/arrive-message:latest
+
