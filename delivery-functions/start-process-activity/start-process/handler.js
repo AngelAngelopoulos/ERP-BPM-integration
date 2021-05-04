@@ -85,6 +85,20 @@ module.exports = async (event, context) => {
         console.info(`* Passing to next task: ${variables}`);
       });
 
+      zbc.createWorker('send-activity', async (job, complete) => { 
+        const { key, variables } = job;
+        console.info(`* Sending Package ...: ${variables}`);
+        complete.success({variables: variables, orderid: orderid });
+        console.info(`* Passing to next task: ${variables}`);
+      });
+
+      zbc.createWorker('on-ship-activity', async (job, complete) => { 
+        const { key, variables } = job;
+        console.info(`* Shipping Package ...: ${variables}`);
+        complete.success({variables: variables, orderid: orderid });
+        console.info(`* Passing to next task: ${variables}`);
+      });
+
 
       //const newsbc = createWorkers(zbc);
       const wfi = await zbc.createWorkflowInstance("process-orders", data);
