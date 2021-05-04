@@ -57,6 +57,35 @@ module.exports = async (event, context) => {
         console.info(`* Passing to next task: ${variables}`);
       });
 
+      zbc.createWorker('receive-activity', async (job, complete) => { 
+        const { key, variables } = job;
+        console.info(`* Receiving Order...: ${variables}`);
+        complete.success({variables: variables, orderid: orderid });
+        console.info(`* Passing to next task: ${variables}`);
+      });
+
+      zbc.createWorker('send-alert-admin-activity', async (job, complete) => { 
+        const { key, variables } = job;
+        console.info(`* Sending Alert to Admin ...: ${variables}`);
+        complete.success({variables: variables, orderid: orderid });
+        console.info(`* Passing to next task: ${variables}`);
+      });
+
+      zbc.createWorker('send-alert-client-activity', async (job, complete) => { 
+        const { key, variables } = job;
+        console.info(`* Sending Alert to Client ...: ${variables}`);
+        complete.success({variables: variables, orderid: orderid });
+        console.info(`* Passing to next task: ${variables}`);
+      });
+
+      zbc.createWorker('cancel-order-activity', async (job, complete) => { 
+        const { key, variables } = job;
+        console.info(`* Canceling Order ...: ${variables}`);
+        complete.success({variables: variables, orderid: orderid });
+        console.info(`* Passing to next task: ${variables}`);
+      });
+
+
       //const newsbc = createWorkers(zbc);
       const wfi = await zbc.createWorkflowInstance("process-orders", data);
       wfi.orderid = orderid;
