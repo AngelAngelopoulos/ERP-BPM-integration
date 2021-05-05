@@ -16,10 +16,10 @@ A javascript based API to communicate ERPNext with Camunda Zeebe and  use its Mi
 4. [Deploy a Diagram](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Deploy-a-Diagram)
 
 ### Zeebe Workflows
-1. [[Creating a Function]]
-2. [[Build a Function]]
-3. [[Deploy a Function]]
-4. [[Testing Functions]]
+1. [Creating a Function](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Creating-a-Function)
+2. [Build a Function](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Build-a-Function)
+3. [Deploy a Function](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Deploy-a-Function)
+4. [Testing Functions](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Testing-Functions)
 
 ### Linking ERP Doctype to Workflow
 1. [ERP Client Scripts](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/ERP-Client-Scripts)
