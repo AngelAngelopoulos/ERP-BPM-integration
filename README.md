@@ -6,7 +6,7 @@ A javascript based API to communicate ERPNext with Camunda Zeebe and  use its Mi
 ### Configuration
 1. [Requisites](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Requisites)
 2. [ERPNext Installation](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/ERPNext-Installation)
-3. [Zeebe Installation](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Zeebe-Installation)
+3. [Zeebe Installation](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Zeebe-Environment)
 4. [Open-faas Installation](https://github.com/AngelAngelopoulos/ERP-BPM-integration/wiki/Open-faas-Installation)
 
 ### BPM Diagrams
